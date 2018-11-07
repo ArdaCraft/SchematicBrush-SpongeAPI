@@ -4,8 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
-import com.mikeprimm.schematicbrush.adapter.Adapter;
-import com.mikeprimm.schematicbrush.adapter.AdapterFactory;
 import com.sk89q.minecraft.util.commands.CommandsManager;
 import com.sk89q.worldedit.*;
 import com.sk89q.worldedit.Vector;
@@ -56,7 +54,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 
-@Plugin(id = "schematicbrush", name = "schematicbrush", version = "1.1.2", dependencies = @Dependency(id = "worldedit"))
+@Plugin(id = "schematicbrush", name = "schematicbrush", version = "1.1.3", dependencies = @Dependency(id = "worldedit"))
 public class SchematicBrush {
 
     final Pattern uuidRegexp = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
@@ -195,7 +193,7 @@ public class SchematicBrush {
                 } else {
                     rndval = rnd.nextInt(100);      // From 0 to 100
                 }
-                if (rndval < total) {   // Fixed weight match
+                if (rndval < total) {   // Fixed weight find
                     for (SchematicDef def : schematics) {
                         if (def.weight > 0) {
                             rndval -= def.weight;
@@ -322,18 +320,8 @@ public class SchematicBrush {
     @Inject
     private Logger log;
 
-    private Adapter adapter = AdapterFactory.DUMMY;
-
     @Listener
     public void onEnable(GameInitializationEvent event) {
-        adapter = AdapterFactory.getAdapter();
-
-        if (adapter.isPresent()) {
-            log.info("Successfully created adapter for the current version of WorldEdit");
-        } else {
-            log.info("Could not create an adapter for the current version of WorldEdit");
-        }
-
         if (!Files.exists(Paths.get(config.getAbsolutePath()))) {
             try {
                 new File(Paths.get(config.getAbsolutePath()).toUri()).createNewFile();
@@ -374,7 +362,7 @@ public class SchematicBrush {
 
 
         org.spongepowered.api.entity.living.player.Player player0 = (org.spongepowered.api.entity.living.player.Player) commandSource;
-        Optional<Player> playerOptional = adapter.wrapPlayer(player0);
+        Optional<Player> playerOptional = PlayerLookup.find(player0);
         if (!playerOptional.isPresent()) {
             player0.sendMessage(Text.of("Could not detect a supported version of WorldEdit"));
             return CommandResult.empty();
@@ -481,7 +469,7 @@ public class SchematicBrush {
 
 
         org.spongepowered.api.entity.living.player.Player player0 = (org.spongepowered.api.entity.living.player.Player) commandSource;
-        Optional<Player> playerOptional = adapter.wrapPlayer(player0);
+        Optional<Player> playerOptional = PlayerLookup.find(player0);
         if (!playerOptional.isPresent()) {
             player0.sendMessage(Text.of("Could not detect a supported version of WorldEdit"));
             return CommandResult.empty();
@@ -636,7 +624,7 @@ public class SchematicBrush {
             SchematicDef def = parseSchematic(player, args[i]);
             if (def == null) {
                 player.print("Schematic '" + args[i] + "' invalid - ignored");
-            } else {  // Now look for match
+            } else {  // Now look for find
                 int idx = ss.schematics.indexOf(def);
                 if (idx >= 0) {
                     ss.schematics.remove(idx);
@@ -738,7 +726,7 @@ public class SchematicBrush {
 
 
         org.spongepowered.api.entity.living.player.Player player0 = (org.spongepowered.api.entity.living.player.Player) commandSource;
-        Optional<Player> playerOptional = adapter.wrapPlayer(player0);
+        Optional<Player> playerOptional = PlayerLookup.find(player0);
         if (!playerOptional.isPresent()) {
             player0.sendMessage(Text.of("Could not detect a supported version of WorldEdit"));
             return CommandResult.empty();
