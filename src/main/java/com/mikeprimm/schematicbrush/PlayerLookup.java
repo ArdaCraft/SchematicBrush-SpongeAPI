@@ -137,10 +137,10 @@ public class PlayerLookup extends AbstractPlayerActor {
      * @return The WorldEdit Player or empty if not found
      */
     public static Optional<Player> find(String name, UUID uuid) {
-        PlayerLookup matcher = cache.get();
-        matcher.id = uuid;
-        matcher.name = name;
-        Player result = WorldEdit.getInstance().getServer().matchPlayer(matcher);
+        PlayerLookup lookup = cache.get();
+        lookup.id = uuid;
+        lookup.name = name;
+        Player result = WorldEdit.getInstance().getServer().matchPlayer(lookup);
         return Optional.ofNullable(result);
     }
 
