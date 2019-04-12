@@ -19,14 +19,15 @@ import javax.annotation.Nullable;
  * Assumes that Platform.matchPlayer(..) relies on either the name (String) or id (UUID) of the player
  * Any other method call will result in an UnsupportedOperationException
  */
-public class PlayerLookup extends AbstractPlayerActor {
+public class PlayerMatcher extends AbstractPlayerActor {
 
-    private static final ThreadLocal<PlayerLookup> cache = ThreadLocal.withInitial(PlayerLookup::new);
+    private final String name;
+    private final UUID id;
 
-    private String name = "";
-    private UUID id = UUID.randomUUID();
-
-    private PlayerLookup() {}
+    private PlayerMatcher(String name, UUID id) {
+        this.name = name;
+        this.id = id;
+    }
 
     @Override
     public String getName() {
@@ -131,17 +132,19 @@ public class PlayerLookup extends AbstractPlayerActor {
     }
 
     /**
-     * Retrieve a WorldEdit Player instance for the given name &/or uuid
+     * Retrieve a WorldEdit Player instance for the given name and/or uuid
      * @param name The name of the Player
      * @param uuid The uuid of the Player
      * @return The WorldEdit Player or empty if not found
      */
     public static Optional<Player> find(String name, UUID uuid) {
-        PlayerLookup lookup = cache.get();
-        lookup.id = uuid;
-        lookup.name = name;
-        Player result = WorldEdit.getInstance().getServer().matchPlayer(lookup);
-        return Optional.ofNullable(result);
+        PlayerMatcher matcher = new PlayerMatcher(name, uuid);
+        Player result = WorldEdit.getInstance().getServer().matchPlayer(matcher);
+        // If null or our PlayerMatcher instance is returned then assume that the Player was not found
+        if (result == null || result == matcher) {
+            return Optional.empty();
+        }
+        return Optional.of(result);
     }
 
     /**
@@ -150,6 +153,6 @@ public class PlayerLookup extends AbstractPlayerActor {
      * @return The WorldEdit Player or empty if not found
      */
     public static Optional<Player> find(org.spongepowered.api.entity.living.player.Player player) {
-        return find(player.getName(), player.getUniqueId());
+        return PlayerMatcher.find(player.getName(), player.getUniqueId());
     }
 }

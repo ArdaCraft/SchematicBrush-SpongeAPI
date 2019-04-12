@@ -362,7 +362,7 @@ public class SchematicBrush {
 
 
         org.spongepowered.api.entity.living.player.Player player0 = (org.spongepowered.api.entity.living.player.Player) commandSource;
-        Optional<Player> playerOptional = PlayerLookup.find(player0);
+        Optional<Player> playerOptional = PlayerMatcher.find(player0);
         if (!playerOptional.isPresent()) {
             player0.sendMessage(Text.of("Could not detect a supported version of WorldEdit"));
             return CommandResult.empty();
@@ -469,7 +469,7 @@ public class SchematicBrush {
 
 
         org.spongepowered.api.entity.living.player.Player player0 = (org.spongepowered.api.entity.living.player.Player) commandSource;
-        Optional<Player> playerOptional = PlayerLookup.find(player0);
+        Optional<Player> playerOptional = PlayerMatcher.find(player0);
         if (!playerOptional.isPresent()) {
             player0.sendMessage(Text.of("Could not detect a supported version of WorldEdit"));
             return CommandResult.empty();
@@ -726,7 +726,7 @@ public class SchematicBrush {
 
 
         org.spongepowered.api.entity.living.player.Player player0 = (org.spongepowered.api.entity.living.player.Player) commandSource;
-        Optional<Player> playerOptional = PlayerLookup.find(player0);
+        Optional<Player> playerOptional = PlayerMatcher.find(player0);
         if (!playerOptional.isPresent()) {
             player0.sendMessage(Text.of("Could not detect a supported version of WorldEdit"));
             return CommandResult.empty();
