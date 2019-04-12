@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * Used to retrieve the (WE)Platform's implementation of the (WE)Player type
  * Assumes that Platform.matchPlayer(..) relies on either the name (String) or id (UUID) of the player
- * Any other method call will result in an UnsupportedOperationException
+ * Any other method call will result in an UnsupportedPlatformException
  */
 public class PlayerLookup extends AbstractPlayerActor {
 
