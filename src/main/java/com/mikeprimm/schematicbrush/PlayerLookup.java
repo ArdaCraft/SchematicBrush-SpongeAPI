@@ -149,7 +149,7 @@ public class PlayerLookup extends AbstractPlayerActor {
             return Optional.of(result);
         } catch (UnsupportedPlatformException e) {
             // Thrown if matchPlayer() for some reason calls any other method on PlayerLookup
-            // Shouldn't happen on current WE implementations but maybe break in future
+            // Shouldn't happen on current WE implementations but may break in future
             e.printStackTrace();
             return Optional.empty();
         }
