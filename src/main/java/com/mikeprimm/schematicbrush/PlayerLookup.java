@@ -140,15 +140,15 @@ public class PlayerLookup extends AbstractPlayerActor {
      */
     public static Optional<Player> find(String name, UUID uuid) {
         try {
-            PlayerLookup matcher = new PlayerLookup(name, uuid);
-            Player result = WorldEdit.getInstance().getServer().matchPlayer(matcher);
-            // If null or our PlayerMatcher instance is returned then assume that the Player was not found
-            if (result == null || result == matcher) {
+            PlayerLookup lookup = new PlayerLookup(name, uuid);
+            Player result = WorldEdit.getInstance().getServer().matchPlayer(lookup);
+            // If null or our PlayerLookup instance is returned then assume that the Player was not found
+            if (result == null || result == lookup) {
                 return Optional.empty();
             }
             return Optional.of(result);
         } catch (UnsupportedPlatformException e) {
-            // Thrown if matchPlayer() for some reason calls any other method on PlayerMatcher
+            // Thrown if matchPlayer() for some reason calls any other method on PlayerLookup
             // Shouldn't happen on current WE implementations but maybe break in future
             e.printStackTrace();
             return Optional.empty();
