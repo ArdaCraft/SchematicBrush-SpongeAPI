@@ -223,7 +223,7 @@ public class SchematicBrush {
 
     public class SchematicBrushInstance implements Brush {
 
-        private static final long DELAY = 500;
+        private static final long delay = 500;
 
         SchematicSet set;
         Player player;
@@ -231,10 +231,16 @@ public class SchematicBrush {
         boolean replaceall;
         int yoff;
         Placement place;
-        long time = 0;
+
+        long timestamp = 0;
 
         @Override
         public void build(EditSession editsession, Vector pos, com.sk89q.worldedit.function.pattern.Pattern mat, double size) throws MaxChangedBlocksException {
+            // possible sponge bug fires interactions twice causing pastes in quick succession?
+            long now = System.currentTimeMillis();
+            if (now - timestamp < delay) return;
+            timestamp = now;
+            // end of rate-limit fix
 
             SchematicDef def = set.getRandomSchematic();    // Pick schematic from set
             if (def == null) return;
